@@ -1,9 +1,10 @@
 #!/user/bin/env python2
 import sys
-sys.path.append('/home/pal/tiago_public_ws/src/playchess/scripts/')
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__),'..'))
 import cv2
 import yaml
-import os
+
 from skimage.metrics import structural_similarity as compare_ssim
 # from skimage.metrics import compare_mse
 '''change it for p2.7 or older version of skimages  '''
@@ -158,7 +159,7 @@ if __name__ == '__main__':
 
     #     img_path = '/home/vaishakh/tiago_public_ws/src/playchess/scripts/vaishakh_scripts/image_processing/Static_images/Image_move_detection/test{}.png'.format(i+1)
     #     img_current = cv2.imread(img_path)
-        move = 8
+        move = 5
         img_path_before= os.path.join(os.path.dirname(__file__),'..','..','data/moves/move_{}/rgb_before.png'.format(move))
         img_path_after= os.path.join(os.path.dirname(__file__),'..','..','data/moves/move_{}/rgb_after.png'.format(move))
         img_previous = cv2.imread(img_path_before)

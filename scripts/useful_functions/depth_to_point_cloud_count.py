@@ -240,7 +240,7 @@ if __name__ == '__main__':
                 # filter_points = np.array(
                 #     [chessboard_corners[0], chessboard_corners[1], chessboard_corners[2], chessboard_corners[3]])
                 #################
-                move = 8
+                move = 5
                 #######################
 
                 depth_image = np.genfromtxt(os.path.join(PLAYCHESS_PKG_DIR,'data/moves/move_{}/depth_after.csv'.format(move)), delimiter=',').astype(np.float32)

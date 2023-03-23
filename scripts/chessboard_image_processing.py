@@ -127,7 +127,7 @@ class ImageProcessing():
                                                   )
         else:
             # OpenCV 3 case
-            __, contours, __ = cv2.findContours(preprocessed_img.copy(), 
+            contours, __ = cv2.findContours(preprocessed_img.copy(), 
                                                          cv2.RETR_TREE, 
                                                          cv2.CHAIN_APPROX_NONE
                                                         )
@@ -706,7 +706,7 @@ if __name__ == "__main__":
     FILE = 'image.png'   # the name of the file used for processing demo  
     root = os.path.normpath(os.path.join(os.path.realpath(os.path.dirname(__file__)), '..'))
     image = cv2.imread(os.path.join(root, 'empty_rgb_image.png'))
-    image = cv2.imread('/home/pal/tiago_public_ws/src/playchess/config/tmp/rgb/rgb_image_for_plane_model2023-03-13 13:13:32.282601.png')
+    image = cv2.imread('/home/vaishakh/tiago_public_ws/src/playchess/config/tmp/rgb/rgb_image_for_plane_model2023-03-09 15:31:58.428364.png')
     image_processing = ImageProcessing(debug = DEBUG, save = SAVE, hough_autotune = True)
     # Run the chessboard segmentation and cell's centers identification
     __, img_out_seg, img_in_seg, __, __ = image_processing.segmentation_sequence(image,'black')
