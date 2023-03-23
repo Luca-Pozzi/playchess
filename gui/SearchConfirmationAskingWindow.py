@@ -2,33 +2,33 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-PLAYCHESS_PKG_DIR = "/home/pal/tiago_public_ws/src/playchess"
-GUI_SCRIPTS_DIR   = PLAYCHESS_PKG_DIR + "/scripts/gui"
+GUI_PKG_DIR = '/home/luca/tiago_public_ws/src/chess_gui'
 
-class Ui_SegmentationConfirmationAskingWindow(object):
-    def setupUi(self, SegmentationConfirmationAskingWindow):
-        SegmentationConfirmationAskingWindow.setObjectName("SegmentationConfirmationAskingWindow")
-        SegmentationConfirmationAskingWindow.resize(606, 577)
-        self.verticalLayout = QtWidgets.QVBoxLayout(SegmentationConfirmationAskingWindow)
+class Ui_SearchConfirmationAskingWindow(object):
+    def setupUi(self, SearchConfirmationAskingWindow):
+        SearchConfirmationAskingWindow.setObjectName("SearchConfirmationAskingWindow")
+        SearchConfirmationAskingWindow.resize(606, 577)
+        self.verticalLayout = QtWidgets.QVBoxLayout(SearchConfirmationAskingWindow)
         self.verticalLayout.setObjectName("verticalLayout")
         self.horLayoutImage = QtWidgets.QHBoxLayout()
         self.horLayoutImage.setObjectName("horLayoutImage")
-        self.ImageLabel = QtWidgets.QLabel(SegmentationConfirmationAskingWindow)
+        self.ImageLabel = QtWidgets.QLabel(SearchConfirmationAskingWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ImageLabel.sizePolicy().hasHeightForWidth())
         self.ImageLabel.setSizePolicy(sizePolicy)
+        self.ImageLabel.setMinimumSize(QtCore.QSize(0, 400))
         self.ImageLabel.setMaximumSize(QtCore.QSize(500, 400))
         self.ImageLabel.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.ImageLabel.setText("")
-        self.ImageLabel.setPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/segmentation_example.png"))
+        self.ImageLabel.setPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/markers_localization.png"))
         self.ImageLabel.setScaledContents(True)
         self.ImageLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.ImageLabel.setObjectName("ImageLabel")
         self.horLayoutImage.addWidget(self.ImageLabel)
         self.verticalLayout.addLayout(self.horLayoutImage)
-        self.CompletionLabel = QtWidgets.QLabel(SegmentationConfirmationAskingWindow)
+        self.CompletionLabel = QtWidgets.QLabel(SearchConfirmationAskingWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -42,12 +42,12 @@ class Ui_SegmentationConfirmationAskingWindow(object):
         self.CompletionLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.CompletionLabel.setObjectName("CompletionLabel")
         self.verticalLayout.addWidget(self.CompletionLabel)
-        self.line = QtWidgets.QFrame(SegmentationConfirmationAskingWindow)
+        self.line = QtWidgets.QFrame(SearchConfirmationAskingWindow)
         self.line.setFrameShape(QtWidgets.QFrame.HLine)
         self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setObjectName("line")
         self.verticalLayout.addWidget(self.line)
-        self.QuestionLabel = QtWidgets.QLabel(SegmentationConfirmationAskingWindow)
+        self.QuestionLabel = QtWidgets.QLabel(SearchConfirmationAskingWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -58,7 +58,7 @@ class Ui_SegmentationConfirmationAskingWindow(object):
         self.QuestionLabel.setWordWrap(True)
         self.QuestionLabel.setObjectName("QuestionLabel")
         self.verticalLayout.addWidget(self.QuestionLabel)
-        self.SuggestionLabel = QtWidgets.QLabel(SegmentationConfirmationAskingWindow)
+        self.SuggestionLabel = QtWidgets.QLabel(SearchConfirmationAskingWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -74,16 +74,16 @@ class Ui_SegmentationConfirmationAskingWindow(object):
         self.verticalLayout.addWidget(self.SuggestionLabel)
         self.hor = QtWidgets.QHBoxLayout()
         self.hor.setObjectName("hor")
-        self.SegmentAgainPushButton = QtWidgets.QPushButton(SegmentationConfirmationAskingWindow)
+        self.SearchAgainPushButton = QtWidgets.QPushButton(SearchConfirmationAskingWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.SegmentAgainPushButton.sizePolicy().hasHeightForWidth())
-        self.SegmentAgainPushButton.setSizePolicy(sizePolicy)
-        self.SegmentAgainPushButton.setMaximumSize(QtCore.QSize(200, 16777215))
-        self.SegmentAgainPushButton.setObjectName("SegmentAgainPushButton")
-        self.hor.addWidget(self.SegmentAgainPushButton)
-        self.CorrectPushButton = QtWidgets.QPushButton(SegmentationConfirmationAskingWindow)
+        sizePolicy.setHeightForWidth(self.SearchAgainPushButton.sizePolicy().hasHeightForWidth())
+        self.SearchAgainPushButton.setSizePolicy(sizePolicy)
+        self.SearchAgainPushButton.setMaximumSize(QtCore.QSize(200, 16777215))
+        self.SearchAgainPushButton.setObjectName("SearchAgainPushButton")
+        self.hor.addWidget(self.SearchAgainPushButton)
+        self.CorrectPushButton = QtWidgets.QPushButton(SearchConfirmationAskingWindow)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -97,26 +97,26 @@ class Ui_SegmentationConfirmationAskingWindow(object):
         self.hor.addWidget(self.CorrectPushButton)
         self.verticalLayout.addLayout(self.hor)
 
-        self.retranslateUi(SegmentationConfirmationAskingWindow)
-        QtCore.QMetaObject.connectSlotsByName(SegmentationConfirmationAskingWindow)
+        self.retranslateUi(SearchConfirmationAskingWindow)
+        QtCore.QMetaObject.connectSlotsByName(SearchConfirmationAskingWindow)
 
 
-    def retranslateUi(self, SegmentationConfirmationAskingWindow):
+    def retranslateUi(self, SearchConfirmationAskingWindow):
         _translate = QtCore.QCoreApplication.translate
-        SegmentationConfirmationAskingWindow.setWindowTitle(_translate("SegmentationConfirmationAskingWindow", "Form"))
-        self.CompletionLabel.setText(_translate("SegmentationConfirmationAskingWindow", "Chessboard segmentation completed!"))
-        self.QuestionLabel.setText(_translate("SegmentationConfirmationAskingWindow", "Are the identified centers correctly placed around the chessboard?"))
-        self.SuggestionLabel.setText(_translate("SegmentationConfirmationAskingWindow", "If not, try moving the chessboard or changing lightning in the room and perform segmetation again "))
-        self.SegmentAgainPushButton.setText(_translate("SegmentationConfirmationAskingWindow", "Segment Again"))
-        self.CorrectPushButton.setText(_translate("SegmentationConfirmationAskingWindow", "Correct"))
+        SearchConfirmationAskingWindow.setWindowTitle(_translate("SearchConfirmationAskingWindow", "Form"))
+        self.CompletionLabel.setText(_translate("SearchConfirmationAskingWindow", "ARUCO markers search completed!"))
+        self.QuestionLabel.setText(_translate("SearchConfirmationAskingWindow", "Has the localization been performed correctly?"))
+        self.SuggestionLabel.setText(_translate("SearchConfirmationAskingWindow", "If not, try moving the box and the clock or changing lightning in the room and perform the search again "))
+        self.SearchAgainPushButton.setText(_translate("SearchConfirmationAskingWindow", "Search Again"))
+        self.CorrectPushButton.setText(_translate("SearchConfirmationAskingWindow", "Correct"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    SegmentationConfirmationAskingWindow = QtWidgets.QWidget()
-    ui = Ui_SegmentationConfirmationAskingWindow()
-    ui.setupUi(SegmentationConfirmationAskingWindow)
-    SegmentationConfirmationAskingWindow.show()
+    SearchConfirmationAskingWindow = QtWidgets.QWidget()
+    ui = Ui_SearchConfirmationAskingWindow()
+    ui.setupUi(SearchConfirmationAskingWindow)
+    SearchConfirmationAskingWindow.show()
     sys.exit(app.exec_())
 

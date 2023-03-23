@@ -8,8 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-PLAYCHESS_PKG_DIR = "/home/pal/tiago_public_ws/src/playchess"
-GUI_SCRIPTS_DIR   = PLAYCHESS_PKG_DIR + "/scripts/gui"
+GUI_PKG_DIR = '/home/luca/tiago_public_ws/src/chess_gui'
 
 class Ui_WizardWindow(object):
     def setupUi(self, WizardWindow):
@@ -62,7 +61,7 @@ class Ui_WizardWindow(object):
         self.ImageLabel.setMinimumSize(QtCore.QSize(335, 300))
         self.ImageLabel.setMaximumSize(QtCore.QSize(335, 300))
         self.ImageLabel.setText("")
-        self.movie = QtGui.QMovie(GUI_SCRIPTS_DIR + "/images/GIFs/Highlight.gif")
+        self.movie = QtGui.QMovie(GUI_PKG_DIR + "/images/GIFs/Highlight.gif")
         self.ImageLabel.setMovie(self.movie)
         self.movie.start()
         self.ImageLabel.setScaledContents(True)

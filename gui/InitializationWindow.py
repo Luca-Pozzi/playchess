@@ -3,9 +3,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
-PLAYCHESS_PKG_DIR = "/home/pal/tiago_public_ws/src/playchess"
-GUI_SCRIPTS_DIR   = PLAYCHESS_PKG_DIR + "/scripts/gui"
+GUI_PKG_DIR = '/home/luca/tiago_public_ws/src/chess_gui'
 
 class Ui_InitializationWindow(object):
     def setupUi(self, InitializationWindow):
@@ -58,7 +56,7 @@ class Ui_InitializationWindow(object):
         self.CorrectPositioningImageLabel.setMinimumSize(QtCore.QSize(200, 250))
         self.CorrectPositioningImageLabel.setMaximumSize(QtCore.QSize(320, 250))
         self.CorrectPositioningImageLabel.setText("")
-        self.CorrectPositioningImageLabel.setPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/correct_setup.png"))
+        self.CorrectPositioningImageLabel.setPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/correct_setup.png"))
         self.CorrectPositioningImageLabel.setScaledContents(True)
         self.CorrectPositioningImageLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.CorrectPositioningImageLabel.setObjectName("CorrectPositioningImageLabel")
@@ -72,7 +70,7 @@ class Ui_InitializationWindow(object):
         self.CurrentChessboardImageLabel.setMinimumSize(QtCore.QSize(0, 0))
         self.CurrentChessboardImageLabel.setMaximumSize(QtCore.QSize(50, 50))
         self.CurrentChessboardImageLabel.setText("")
-        self.movie = QtGui.QMovie(GUI_SCRIPTS_DIR + "/images/ElaborationGif.gif")
+        self.movie = QtGui.QMovie(GUI_PKG_DIR + "/images/ElaborationGif.gif")
         self.CurrentChessboardImageLabel.setMovie(self.movie)
         self.movie.start()
         #self.CurrentChessboardImageLabel.setPixmap(QtGui.QPixmap("images/Pulse-1s-211px.gif"))

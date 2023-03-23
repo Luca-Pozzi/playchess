@@ -1,39 +1,36 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'BlackPromotionWindow.ui'
-
 from PyQt5 import QtCore, QtGui, QtWidgets
 import rospy
 from std_msgs.msg import String
 from std_msgs.msg import Bool, Int16, String
 from geometry_msgs.msg import Point
 
-PLAYCHESS_PKG_DIR = "/home/pal/tiago_public_ws/src/playchess"
-GUI_SCRIPTS_DIR   = PLAYCHESS_PKG_DIR + "/scripts/gui"
+GUI_PKG_DIR = '/home/luca/tiago_public_ws/src/chess_gui'
 
-class Ui_BlackPromotion(object):
-    def setupUi(self, BlackPromotion):
+class Ui_WhitePromotion(object):
+    def setupUi(self, WhitePromotion):
         #Icons of the selected buttons
         self.icon_bishop_selected = QtGui.QIcon()
-        self.icon_bishop_selected.addPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/B_Bishop_w_frame.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon_bishop_selected.addPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/W_Bishop_w_frame.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.icon_knight_selected = QtGui.QIcon()
-        self.icon_knight_selected.addPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/B_Knight_w_frame.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon_knight_selected.addPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/W_Knight_w_frame.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.icon_queen_selected = QtGui.QIcon()
-        self.icon_queen_selected.addPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/B_Queen_w_frame.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon_queen_selected.addPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/W_Queen_w_frame.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.icon_rook_selected = QtGui.QIcon()
-        self.icon_rook_selected.addPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/B_Rook_w_frame.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon_rook_selected.addPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/W_Rook_w_frame.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
 
-        BlackPromotion.setObjectName("BlackPromotion")
-        BlackPromotion.resize(400, 134)
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout(BlackPromotion)
+        WhitePromotion.setObjectName("WhitePromotion")
+        WhitePromotion.resize(400, 134)
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout(WhitePromotion)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.QuestionLabel = QtWidgets.QLabel(BlackPromotion)
+        self.QuestionLabel = QtWidgets.QLabel(WhitePromotion)
         self.QuestionLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.QuestionLabel.setObjectName("QuestionLabel")
         self.verticalLayout_2.addWidget(self.QuestionLabel)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.queenPushButton = QtWidgets.QPushButton(BlackPromotion)
+        self.queenPushButton = QtWidgets.QPushButton(WhitePromotion)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -41,13 +38,13 @@ class Ui_BlackPromotion(object):
         self.queenPushButton.setSizePolicy(sizePolicy)
         self.queenPushButton.setText("")
         self.icon_queen = QtGui.QIcon()
-        self.icon_queen.addPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/B_Queen_w.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon_queen.addPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/W_Queen_w.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.queenPushButton.setIcon(self.icon_queen_selected)
         self.queenPushButton.setIconSize(QtCore.QSize(50, 50))
         self.queenPushButton.setObjectName("queenPushButton")
         self.queenPushButton.setFocus() #Set the initial focus of the GUI.
         self.horizontalLayout_3.addWidget(self.queenPushButton)
-        self.rookPushButton = QtWidgets.QPushButton(BlackPromotion)
+        self.rookPushButton = QtWidgets.QPushButton(WhitePromotion)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -55,12 +52,12 @@ class Ui_BlackPromotion(object):
         self.rookPushButton.setSizePolicy(sizePolicy)
         self.rookPushButton.setText("")
         self.icon_rook = QtGui.QIcon()
-        self.icon_rook.addPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/B_Rook_w.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon_rook.addPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/W_Rook_w.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.rookPushButton.setIcon(self.icon_rook)
         self.rookPushButton.setIconSize(QtCore.QSize(50, 50))
         self.rookPushButton.setObjectName("rookPushButton")
         self.horizontalLayout_3.addWidget(self.rookPushButton)
-        self.knightPushButton = QtWidgets.QPushButton(BlackPromotion)
+        self.knightPushButton = QtWidgets.QPushButton(WhitePromotion)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -68,12 +65,12 @@ class Ui_BlackPromotion(object):
         self.knightPushButton.setSizePolicy(sizePolicy)
         self.knightPushButton.setText("")
         self.icon_knight = QtGui.QIcon()
-        self.icon_knight.addPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/B_Knight_w.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon_knight.addPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/W_Knight_w.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.knightPushButton.setIcon(self.icon_knight)
         self.knightPushButton.setIconSize(QtCore.QSize(50, 50))
         self.knightPushButton.setObjectName("knightPushButton")
         self.horizontalLayout_3.addWidget(self.knightPushButton)
-        self.bishopPushButton = QtWidgets.QPushButton(BlackPromotion)
+        self.bishopPushButton = QtWidgets.QPushButton(WhitePromotion)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -81,28 +78,28 @@ class Ui_BlackPromotion(object):
         self.bishopPushButton.setSizePolicy(sizePolicy)
         self.bishopPushButton.setText("")
         self.icon_bishop = QtGui.QIcon()
-        self.icon_bishop.addPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/B_Bishop_w.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.icon_bishop.addPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/W_Bishop_w.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.bishopPushButton.setIcon(self.icon_bishop)
         self.bishopPushButton.setIconSize(QtCore.QSize(50, 50))
         self.bishopPushButton.setObjectName("bishopPushButton")
         self.horizontalLayout_3.addWidget(self.bishopPushButton)
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
 
-        self.retranslateUi(BlackPromotion)
-        QtCore.QMetaObject.connectSlotsByName(BlackPromotion)
+        self.retranslateUi(WhitePromotion)
+        QtCore.QMetaObject.connectSlotsByName(WhitePromotion)
 
-    def retranslateUi(self, BlackPromotion):
+    def retranslateUi(self, WhitePromotion):
         _translate = QtCore.QCoreApplication.translate
-        BlackPromotion.setWindowTitle(_translate("BlackPromotion", "Form"))
-        self.QuestionLabel.setText(_translate("BlackPromotion", "Which is the promoted piece?"))
+        WhitePromotion.setWindowTitle(_translate("WhitePromotion", "Form"))
+        self.QuestionLabel.setText(_translate("WhitePromotion", "Which is the promoted piece?"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    BlackPromotion = QtWidgets.QWidget()
-    ui = Ui_BlackPromotion()
-    ui.setupUi(BlackPromotion)
-    BlackPromotion.show()
+    WhitePromotion = QtWidgets.QWidget()
+    ui = Ui_WhitePromotion()
+    ui.setupUi(WhitePromotion)
+    WhitePromotion.show()
     sys.exit(app.exec_())
 

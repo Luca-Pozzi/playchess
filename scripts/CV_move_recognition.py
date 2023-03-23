@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.6
 # Processing of the pointcloud over the chessboard
 
 # Rospy for the subscriber

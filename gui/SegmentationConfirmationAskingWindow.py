@@ -2,8 +2,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-PLAYCHESS_PKG_DIR = "/home/pal/tiago_public_ws/src/playchess"
-GUI_SCRIPTS_DIR   = PLAYCHESS_PKG_DIR + "/scripts/gui"
+GUI_PKG_DIR = '/home/luca/tiago_public_ws/src/chess_gui'
 
 class Ui_SegmentationConfirmationAskingWindow(object):
     def setupUi(self, SegmentationConfirmationAskingWindow):
@@ -22,7 +21,7 @@ class Ui_SegmentationConfirmationAskingWindow(object):
         self.ImageLabel.setMaximumSize(QtCore.QSize(500, 400))
         self.ImageLabel.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.ImageLabel.setText("")
-        self.ImageLabel.setPixmap(QtGui.QPixmap(GUI_SCRIPTS_DIR + "/images/segmentation_example.png"))
+        self.ImageLabel.setPixmap(QtGui.QPixmap(GUI_PKG_DIR + "/images/segmentation_example.png"))
         self.ImageLabel.setScaledContents(True)
         self.ImageLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.ImageLabel.setObjectName("ImageLabel")
