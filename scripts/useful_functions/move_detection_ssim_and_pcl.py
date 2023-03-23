@@ -25,11 +25,8 @@ from useful_functions.depth_to_point_cloud_count import DepthImageProcessing
 # from useful_functions.homographic_transformation import HOMO_TRANSFOR as ht
 from useful_functions import config as cfg
 if __name__ =='__main__':
-<<<<<<< HEAD
     move=5
-=======
-    move=12
->>>>>>> parent of 85fbc00... ambiguity solve change for capture and end square
+
 PLAYCHESS_PKG_DIR = os.path.normpath(os.path.join(os.path.realpath(os.path.dirname(__file__)), '..', '..'))
 
 class OccupancyChecker:
@@ -451,11 +448,7 @@ class OccupancyChecker:
                 elif self.live_chessboard_situation_complete[current_square][1] == self.color:
                     self.possible_capture.append(current_square)
             # print('self.possible_start_square:',self.possible_start_square)
-<<<<<<< HEAD
-            # print('self.possible_capture_square:',self.possible_capture)
-=======
-            #print('self.possible_capture_square:',self.possible_capture)
->>>>>>> parent of 85fbc00... ambiguity solve change for capture and end square
+
             # print('self.possible_end_square:',self.possible_end_square)
 
             temp_start_square = self.possible_start_square.copy()
@@ -544,15 +537,7 @@ class OccupancyChecker:
                     elif a != self.possible_start_square[0]:
                         self.possible_end_square.append(a)
                         end = True
-<<<<<<< HEAD
-=======
-            
-            print('self.possible_capture_square:',self.possible_capture)
 
-            if len(self.possible_capture) !=0:
-                
-                self.possible_end_square =[]
->>>>>>> parent of 85fbc00... ambiguity solve change for capture and end square
 
             #print('potential_squares are:',self.potential_altered_squares)
             
