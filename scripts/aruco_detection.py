@@ -1,19 +1,8 @@
 #!/usr/bin/env python
-#Class to detect aruco markers and locate table and chessboard
+"""This script implements the ROS node to find the ArUco markers needed to locate the box for the captured pieces and the clock.
+"""
 
-#ROS libraries
-import rospy, rosnode
-import moveit_commander
-
-#ROS messages
-from moveit_msgs.srv import GetPlanningScene, ApplyPlanningScene
-from moveit_msgs.msg import PlanningSceneComponents, PlanningScene, AllowedCollisionEntry, AllowedCollisionMatrix, Constraints, PositionConstraint, BoundingVolume, VisibilityConstraint, JointConstraint, OrientationConstraint
-from geometry_msgs.msg import Point, Quaternion, Pose, PoseStamped, Vector3
-from shape_msgs.msg import SolidPrimitive
-from sensor_msgs.msg import Image
-from std_msgs.msg import Bool, Int16, String
-
-#Python libraries
+# Python libraries
 import copy
 from math import pi
 import cv2
@@ -21,49 +10,59 @@ import os
 import time
 import yaml
 
-# ROS Image message -> OpenCV2 image converter
-from cv_bridge import CvBridge, CvBridgeError
+# ROS libraries
+import rospy
+import moveit_commander
 
-#My scripts
+# ROS packages
+import ros_numpy
+
+# ROS messages
+from geometry_msgs.msg import Point, Quaternion, Pose, PoseStamped
+from sensor_msgs.msg import Image
+from std_msgs.msg import Int16
+
+# My scripts
 import config as cfg
 
-PLAYCHESS_PKG_DIR = '/home/luca/tiago_public_ws/src/tiago_playchess'
-GUI_PKG_DIR       = '/home/luca/tiago_public_ws/src/chess_gui'
+''' TODO
+Merge a global publisher, a function and a class into single class. A reasonable name could be ArucoSetup or SceneSetup (as it also adds the "walls" to the scene, a feature that should probably moved to a different place, e.g. where the pieces are added).
 
-#Instantiate CvBridge
-bridge = CvBridge()
+Behavior could be: setup two subscribers (for clock and box marker). Upon request, activate the callbacks, receive detections and average them (for a fixed time, i.e. few seconds). Check if both have been found at least once, otherwise warn the user/ask for intervention/re-run.
 
-#Publishers initialization
+In a different script, there should be a SetupManager (opposed to a GameManager) that handles the node start and stop to avoid having unuseful nodes running continuously.
+
+Isolate the SceneBuilder, just use the `new` class to pass the clock and box Pose to the SceneBuilder
+'''
+
+PLAYCHESS_PKG_DIR = "/home/pal/tiago_public_ws/src/playchess"
+GUI_SCRIPTS_DIR   = PLAYCHESS_PKG_DIR + "/scripts/gui"
+
+# Publishers initialization
 state_publisher = rospy.Publisher('/state', Int16, queue_size = 10)
 
-
-#Callback to save the image
-def SaveImage(data):
-	#Save the image of the ARUCO markers that have been identified.
-	try:
-		# Convert your ROS Image message to OpenCV2
-		cv2_img = bridge.imgmsg_to_cv2(data, "bgr8")
-	except CvBridgeError, e:
-		print(e)
-	else:
-		cv2.imwrite(os.path.join(GUI_PKG_DIR + '/images', 'markers_localization.png'), cv2_img) #save the OpenCv2 image as png
-
-	rospy.loginfo('ARUCO markers localization result image saved in the chess_gui/images folder')
-
-	state_publisher.publish(40) #State of enabling the GUI pushbutton to confirm the markers localization.
+def save_image(msg):
+	# Convert the ROS Image message into a numpy ndarray.
+	img = ros_numpy.numpify(msg)
+	# Save the image to the proper folder to open it in the GUI.
+	cv2.imwrite(os.path.join(GUI_SCRIPTS_DIR, 'images', 'markers_localization.png'), cv2.cvtColor(img, cv2.COLOR_BGR2RGB)) 
+	rospy.loginfo('ARUCO markers localization result image saved in the ' + (os.path.join(GUI_SCRIPTS_DIR, 'images') + ' folder.'))
+	# Publish a state message to be read by the GUI. Once received, the GUI will enable the button to confirm the markers localization.
+	state_publisher.publish(40)
 
 
-class Aruco:
+class Aruco:	# probably should be something like "SceneBuilder or SceneSetup"
 	def __init__(self):
-		#ARUCO numbers associated with each object
-		self.clock = cfg.aruco_clock #100
-		self.box = cfg.aruco_box #300
+		# ArUco marker ID associated with each object
+		self.clock = cfg.aruco_clock 	# 100
+		self.box = cfg.aruco_box 		# 300
 
 		#Define TIAGo's interface
 		self.scene = moveit_commander.PlanningSceneInterface() #The interface with the world surrounding the robot
 
-		self.clock_pose_file = rospy.get_param('/tiago_playchess/clock_pose_file')
-		self.box_pose_file = rospy.get_param('/tiago_playchess/box_pose_file')
+		self.clock_pose_file = rospy.get_param('/playchess/clock_pose_file')
+		self.box_pose_file = rospy.get_param('/playchess/box_pose_file')
+		# TODO: use a namespace instead of hardcoding the package name
 
 
 	def aruco_detection(self, target, time_limit = 3):
@@ -85,15 +84,17 @@ class Aruco:
 				pose_msg = rospy.wait_for_message('/{}/pose'.format(name), PoseStamped, timeout = time_limit)
 				got_aruco = True
 			except rospy.exceptions.ROSException: #Handle the exception thrown by wait_for_message if timeout occurs
-				rospy.logwarn('Timeout exceeded the time limit of {time_limit:.0f}s.'.format(time_limit = time_limit))
+				#rospy.logwarn('Timeout exceeded the time limit of {time_limit:.0f}s.'.format(time_limit = time_limit))
 				got_aruco = False
 
 			if got_aruco: # and pose_msg.header.frame_id == '/base_footprint'
 				if averaged_samples == 1:
 					pose_f = pose_msg.pose
 				elif averaged_samples > 1:
-					pose_f.position = pts.average_point(new_point = pose_msg.pose.position, num_samples = averaged_samples, avg_point = pose_f.position)
-					pose_f.orientation = quat.average_Quaternions(new_q = pose_msg.pose.orientation, num_samples = averaged_samples, avg_q = pose_f.orientation)
+					pass
+					# TODO. Restore the missing libraries `points` and `quaternions`
+					#pose_f.position = pts.average_point(new_point = pose_msg.pose.position, num_samples = averaged_samples, avg_point = pose_f.position)
+					#pose_f.orientation = quat.average_Quaternions(new_q = pose_msg.pose.orientation, num_samples = averaged_samples, avg_q = pose_f.orientation)
 				averaged_samples += 1
 				rospy.loginfo('ArUco marker for {} found:'.format(target))
 				rospy.loginfo(pose_f)
@@ -102,6 +103,10 @@ class Aruco:
 				rospy.loginfo('No marker corresponding to {} found, try again'.format(target))
 
 			elapsed_time += rospy.get_time() - t
+
+	'''TODO
+	def add_box(self, name, pose, size, savefile = None)
+	'''
 
 	def populate_clock(self, clock_pose):
 		#Add collision box corresponding to the clock.
@@ -148,7 +153,6 @@ class Aruco:
 		pose.header.stamp = rospy.Time.now()
 		pose.pose = Pose(Point(box_pose.position.x + 0.40, box_pose.position.y - 0.25, box_pose.position.z), Quaternion(0, 0, 0, 1))
 		self.scene.add_box('wall_3', pose, size = (0.02, 1.2, 1.2))
-
 		
 
 if __name__ == '__main__':
@@ -170,7 +174,7 @@ if __name__ == '__main__':
 	time.sleep(1)
 
 	#Initalize a Subscriber to get the image of the found markers.
-	rospy.Subscriber("/aruco_single100/result", Image, SaveImage)
+	rospy.Subscriber("/aruco_single100/result", Image, save_image)
 
 
 	try:

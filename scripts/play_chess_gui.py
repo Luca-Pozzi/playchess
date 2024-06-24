@@ -17,29 +17,29 @@ from sensor_msgs.msg import CompressedImage
 import moveit_commander
 from geometry_msgs.msg import Quaternion, PointStamped, Pose, Point, PoseStamped, WrenchStamped
 
-import config_pyqt_white as cfg_w
-import config_pyqt_black as cfg_b
+import gui.config_pyqt_white as cfg_w
+import gui.config_pyqt_black as cfg_b
 import config as cfg
 
-from InitializationWindow import Ui_InitializationWindow #Main window
-from ColorAskingWindow import Ui_ColorAskingWindow
-from StartSegmentationWindow import Ui_StartSegmentation
-from ChessboardSegmentationWindow import Ui_SegmentationExecution
-from SegmentationConfirmationAskingWindow import Ui_SegmentationConfirmationAskingWindow
-from StartMarkersSearchWindow import Ui_StartMarkersSearch
-from MarkersSearchWindow import Ui_SearchExecution
-from SearchConfirmationAskingWindow import Ui_SearchConfirmationAskingWindow
-from TiagoPreparationWindow import Ui_TiagoPreparation
-from Chessboard_White import Ui_Chessboard_White
-from Chessboard_Black import Ui_Chessboard_Black
-from WhitePromotionWindow import Ui_WhitePromotion
-from BlackPromotionWindow import Ui_BlackPromotion
-from ManualModeWindow import Ui_ManualModeWindow
-from WizardWindow import Ui_WizardWindow
+from gui.InitializationWindow import Ui_InitializationWindow #Main window
+from gui.ColorAskingWindow import Ui_ColorAskingWindow
+from gui.StartSegmentationWindow import Ui_StartSegmentation
+from gui.ChessboardSegmentationWindow import Ui_SegmentationExecution
+from gui.SegmentationConfirmationAskingWindow import Ui_SegmentationConfirmationAskingWindow
+from gui.StartMarkersSearchWindow import Ui_StartMarkersSearch
+from gui.MarkersSearchWindow import Ui_SearchExecution
+from gui.SearchConfirmationAskingWindow import Ui_SearchConfirmationAskingWindow
+from gui.TiagoPreparationWindow import Ui_TiagoPreparation
+from gui.Chessboard_White import Ui_Chessboard_White
+from gui.Chessboard_Black import Ui_Chessboard_Black
+from gui.WhitePromotionWindow import Ui_WhitePromotion
+from gui.BlackPromotionWindow import Ui_BlackPromotion
+from gui.ManualModeWindow import Ui_ManualModeWindow
+from gui.WizardWindow import Ui_WizardWindow
 
 
-PLAYCHESS_PKG_DIR = '/home/luca/tiago_public_ws/src/tiago_playchess'
-GUI_PKG_DIR       = '/home/luca/tiago_public_ws/src/chess_gui'
+PLAYCHESS_PKG_DIR = '/home/pal/tiago_public_ws/src/playchess'
+GUI_PKG_DIR       = PLAYCHESS_PKG_DIR + '/scripts/gui'
 #Starts a new node
 rospy.init_node('GUI_commander', anonymous = True)
 
@@ -48,8 +48,9 @@ update_flag = True
 current_window = 1
 square_object = 'none'
 square_captured_piece = 'none'
-simul_config = rospy.get_param('/tiago_playchess/simul_config')
+simul_config = rospy.get_param('/playchess/simul_config')
 imported_configurations = PLAYCHESS_PKG_DIR + '/scripts/config/simulation_config.yaml'
+imported_configurations_std = PLAYCHESS_PKG_DIR + '/scripts/config/standard_config.yaml'
 
 #Defines
 pawns_w = ['pawn_a2', 'pawn_b2', 'pawn_c2', 'pawn_d2', 'pawn_e2', 'pawn_f2', 'pawn_g2', 'pawn_h2']
@@ -357,6 +358,12 @@ class MainWindow(QtWidgets.QMainWindow, Ui_InitializationWindow):
         global color
         color = data.data
         ################
+        with open(imported_configurations_std) as file:
+            params = yaml.load(file, Loader = yaml.Loader)
+        params['color'] = color
+        with open(imported_configurations_std, "w") as t_p:
+            yaml.dump(params, t_p)
+        ##########################################for passing tiago color to segmentation function in chess
         with open(imported_configurations) as file:
             params = yaml.load(file, Loader = yaml.Loader)
         params['color'] = color
@@ -3298,7 +3305,7 @@ class ChessboardWhiteWindow(QtWidgets.QWidget, Ui_Chessboard_White):
 
     def OpponentMoveEndSquare(self, data):
         self.opponent_move_end_square = data.data
-
+        
         rospy.sleep(1)
 
         if self.opponent_move_end_square == 'castle':
@@ -3591,6 +3598,7 @@ class ChessboardBlackWindow(QtWidgets.QWidget, Ui_Chessboard_Black):
     manual_mode = QtCore.pyqtSignal(int)
     back_to_game = QtCore.pyqtSignal(int)
     global update_flag
+    #update_flag = False
 
     def __init__(self):
         super(ChessboardBlackWindow, self).__init__()

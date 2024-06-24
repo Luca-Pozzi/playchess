@@ -14,20 +14,22 @@ import rospy
 import tf
 import message_filters
 import moveit_commander
+from datetime import datetime
 
 #ROS messages
 from sensor_msgs.msg import PointCloud2, CompressedImage, Image
 from std_msgs.msg import Bool, Int16
 from geometry_msgs.msg import Quaternion, PointStamped, Pose, Point, PoseStamped, WrenchStamped
 from sensor_msgs import point_cloud2
+from cv_bridge import CvBridge, CvBridgeError
 
 #My scripts
 from chessboard_image_processing import ImageProcessing
 import config as cfg
 
 
-PLAYCHESS_PKG_DIR = '/home/luca/tiago_public_ws/src/tiago_playchess'
-GUI_PKG_DIR       = '/home/luca/tiago_public_ws/src/chess_gui'
+PLAYCHESS_PKG_DIR = '/home/pal/tiago_public_ws/src/playchess'
+GUI_SCRIPTS_DIR       = PLAYCHESS_PKG_DIR + '/scripts/gui'
 imported_chessboard_squares_pickle = PLAYCHESS_PKG_DIR + '/config/simul_config_not_transformed.pickle'
 imported_chessboard_vertices_pickle = PLAYCHESS_PKG_DIR + '/config/vertices_not_transformed.pickle'
 
@@ -35,8 +37,10 @@ offset = 0.01 #Offset of height of the cylinders representing pieces in the plan
 
 
 class PlanningScene:
-    def __init__(self):
-        self.img_processing = ImageProcessing()
+    def __init__(self, save = True):
+        self.img_processing = ImageProcessing(save = save)
+
+        self.save = save
 
         #Publishers initialization
         self.cloud_publisher = rospy.Publisher('/segmentation_result/cloud', PointCloud2, queue_size = 10)
@@ -56,17 +60,20 @@ class PlanningScene:
         #Initialize variables
         self.done = False #Flag to understand if the segmentation of the chessboard has been done correctly
 
-        self.simul_config = rospy.get_param('/tiago_playchess/simul_config')
-        self.simul_config_not_transformed = rospy.get_param('/tiago_playchess/simul_config_not_transformed')
-        self.chessboard_vertices_file = rospy.get_param('/tiago_playchess/chessboard_vertices')
-        self.chessboard_vertices_not_transformed_file = rospy.get_param('/tiago_playchess/chessboard_vertices_not_transformed')
-        self.z_coord_chessboard_mean = rospy.get_param('/tiago_playchess/z_coord_chessboard_mean')
-
+        self.root = rospy.get_param('/playchess/root')
+        self.simul_config = rospy.get_param('/playchess/simul_config')
+        self.simul_config_not_transformed = rospy.get_param('/playchess/simul_config_not_transformed')
+        self.chessboard_vertices_file = rospy.get_param('/playchess/chessboard_vertices')
+        self.chessboard_vertices_not_transformed_file = rospy.get_param('/playchess/chessboard_vertices_not_transformed')
+        self.z_coord_chessboard_mean = rospy.get_param('/playchess/z_coord_chessboard_mean')
+        
         #Define TIAGo's interface
         self.scene = moveit_commander.PlanningSceneInterface() #The interface with the world surrounding the robot
         self.pieces_coordinates = cfg.pieces_coordinates
-        with open(PLAYCHESS_PKG_DIR + '/scripts/config/standard_config.yaml') as t_p:
+        with open(self.root + '/scripts/config/standard_config.yaml') as t_p:
                 params = yaml.load(t_p)
+        # to pass to tiago_color in segmentaion function        
+        self.tiago_color = params['color']
         if params['color'] == 'white':
             self.squares_to_index = cfg.squares_to_index_white
         else:
@@ -81,20 +88,45 @@ class PlanningScene:
         self.knight = cfg.knight
 
     def pointcloud_chessboard(self, pointcloud2):
-        #Interrupt function that is called whenever a new message from the depth camera arrives.
+        # Interrupt function that is called whenever a new message from the depth camera arrives.
         if not self.done:
             self.centroids = [] #Centroids will contain arrays of the 3 coordinates in the space of the chessboard centers
             self.vertices = []
 
-            #Wait for a message from the RGB camera
-            rgb_image = rospy.wait_for_message('/xtion/rgb/image_rect_color/compressed', CompressedImage, timeout = 30)
+            bridge = CvBridge()
+            # Wait for a message from the RGB camera
+            #rgb_msg = rospy.wait_for_message('/xtion/rgb/image_rect_color/compressed', CompressedImage, timeout = 30)
+            #rgb_image = bridge.compressed_imgmsg_to_cv2(rgb_msg)
+            rgb_msg = rospy.wait_for_message('/xtion/rgb/image_rect_color', Image, timeout = 30)
+            rgb_image = bridge.imgmsg_to_cv2(rgb_msg)
+
+            #datae and time
+            now=datetime.now()
+            # Wait for a message from depth camera
+            depth_msg= rospy.wait_for_message("/xtion/depth/image_raw", Image)
+            
+            depth_image_for_plane_model = bridge.imgmsg_to_cv2(depth_msg, "32FC1")
+            # Converting to np array
+            depth_array_for_plane_model = np.array(depth_image_for_plane_model, dtype=np.float32) 
+            # Save image as csv file
+            np.savetxt(os.path.join(self.root, 'config', 'tmp', 'depth', 
+                                    'depth_array_segmentation{}.csv'.format(now)),
+                        depth_array_for_plane_model, delimiter=","
+                        )
+            
+            # Save image as png
+            cv2.imwrite(os.path.join(self.root, 'config', 'tmp', 'rgb', 
+                                     'rgb_image_for_plane_model{}.png'.format(now)),
+                                     cv2.cvtColor(rgb_image, cv2.COLOR_BGR2RGB))
 
             #Conversion to cv2 image
-            np_arr = np.fromstring(rgb_image.data, np.uint8)
+            np_arr = np.fromstring(rgb_msg.data, np.uint8)
             img_np = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
             
             #Segment the image
-            self.rows, annotated_img_np, annotated_img_np_vertices, squares_number, self.chessboard_vertices = self.img_processing.segmentation_sequence(img_np)
+            print('##########################################################',self.tiago_color)
+            self.rows, annotated_img_np, annotated_img_np_vertices, squares_number, self.chessboard_vertices = self.img_processing.segmentation_sequence(cv2.cvtColor(rgb_image, cv2.COLOR_BGR2RGB),tiago_color=self.tiago_color)
+            
             if len(self.chessboard_vertices) < 4:
                 rospy.logwarn('Not all 4 vertices have been identified. Try segmenting again')
             #t = time.time()
@@ -112,19 +144,9 @@ class PlanningScene:
                 #print("Publishing the annotated image took " + str(time.time() - t))   # it takes up to 0.01s
                                                                                         # think about making this part optional, even at runtime through a param
                 
-                cv2.imwrite(os.path.join(GUI_PKG_DIR + '/images', 'segmentation_example.png'), annotated_img_np)
-                rospy.loginfo('Segmentation result image saved in the chess_gui/images folder')
-                '''
-                #Publish the annotated image of the veritces
-                annotated_img_msg_vertices = CompressedImage()
-                #Header and format
-                annotated_img_msg_vertices.header.stamp = rospy.Time.now()
-                annotated_img_msg_vertices.format = "jpeg"
-                #Actual image
-                annotated_img_msg_vertices.data = np.array(cv2.imencode('.jpg', annotated_img_np_vertices)[1]).tostring()
-                cv2.imwrite(os.path.join(GUI_PKG_DIR + '/images', 'vertices.png'), annotated_img_np_vertices)
-                rospy.loginfo('Vertices image saved in the chess_gui/images folder')
-                '''
+                cv2.imwrite(os.path.join(GUI_SCRIPTS_DIR , 'images',
+                                          'segmentation_example.png'), annotated_img_np)
+                rospy.loginfo('Segmentation result image saved in the `gui/images` folder')
 
                 #Get an iterable object from the pointcloud and use it to fill a numpy array of points (faster than point_cloud2.read_points_list)
                 depth_points_iterable = point_cloud2.read_points(pointcloud2, skip_nans = False, field_names = ("x", "y", "z"))
@@ -138,7 +160,7 @@ class PlanningScene:
                         count += 1
 
                 for vertices in self.chessboard_vertices:
-                    self.vertices.append(self.depth_points_array[vertices[0][1], vertices[0][0], :])
+                    self.vertices.append(self.depth_points_array[vertices[1], vertices[0], :])
 
                 if count == 64:
                     self.done = True
